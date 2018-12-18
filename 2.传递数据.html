@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"> 
+        父组件原始值:{{num}}
+        <br />
+        直接传递字符串,props="传递值"
+        <global-component :age="2222" name="龙杨"></global-component>
+        <br />
+        直接绑定父组件数据,实现双向绑定,:props="数据名"
+        <input type="text" name="" id="" v-model="num">
+        <global-component :age="num"></global-component>
+        <br /> 
+        实现props数据校验证String Number Boolean Array Object Function,
+        注意数据验证必须使用v-bind方式
+        <pre>
+                props:{
+                    name:{
+                        type:String,
+                        default:function(){
+                            return '默认名称';
+                        }
+                    },
+                    age:{
+                        type:Number,
+                        required:true
+                    }
+                }
+        </pre>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>  
+        Vue.component('global-component',{
+            //注意HTML不区分大小写,所以驼峰命名要改为短横模式
+            props:{
+                name:{
+                    type:String,
+                    default:function(){
+                        return '默认名称';
+                    }
+                },
+                age:{
+                    type:Number,
+                    required:true
+                }
+            },
+           // props:['age','name'],
+            template:'<div>名称:{{name}}<br/>年龄{{age}}岁<hr /></div>'
+        }) 
+        new Vue({
+            el:"#app",
+            data:{ 
+                num:123,
+            } 
+        })
+    </script>
+</body>
+</html>
