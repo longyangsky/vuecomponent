@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"> 
+        父组件获取数据:
+        {{count}}
+        子组件操作:
+        <br/>
+        监听原生事件v-on:click.native
+       <global-component @emitadd="emitadd" @emitredure="emitredure"></global-component>
+        <br />
+        使用v-model表单双向绑定事件,默认特殊事件名为input
+        <input-component v-model="count2"></input-component>
+        父组件:{{count2}}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>  
+        Vue.component('input-component',{
+            props:['value'],
+            template:`
+                <input type='text' :value='value'  @input='updateValue'  >
+            `,
+            data:function (){
+                return {
+                    count:0
+                }
+            },
+            methods:{
+                updateValue:function(event){
+                    this.$emit('input',event.target.value)
+                }
+            }
+        })
+        Vue.component('global-component',{
+            //注意HTML不区分大小写,所以驼峰命名要改为短横模式  
+            template:`
+             <div>
+              <button @click="reduce">-</button>
+              {{count}}
+              <button @click="add">+</button>
+             </div>
+            `,
+            data:function(){
+                return {
+                    count:0
+                }
+            },
+            methods:{
+                add:function(){
+                    this.count++;
+                    this.$emit("emitadd",this.count)
+                },
+                reduce:function(){
+                    this.count--; 
+                    this.$emit("emitredure",this.count)
+                }
+            }
+        }) 
+        new Vue({
+            el:"#app",
+            data:{ 
+                num:123,
+                count:0,
+                count2:0
+            } ,
+            methods:{
+                emitadd:function(count){
+                    this.count=count;
+                },
+                emitredure:function(count){
+                    this.count=count;
+                }
+            }
+        })
+    </script>
+</body>
+</html>
