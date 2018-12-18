@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        {{hello}}
+        <global-component></global-component>
+        <br />
+        <table>
+            <tbody is="global-component">由于HTML限制可以用is属性替换组件，如果TABLE允许有tr存在，ul,ol,select都是限制元素</tbody>
+        </table>
+        <local-component></local-component>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        //全局注册
+        Vue.component('global-component',{
+            template:'<div>全局注册Vue.component(),counter计算{{counter}},<button @click="counter++">AddCounter</button></div>',
+            data:function(){
+                return {
+                    counter:0
+                }
+            }
+        })
+        var loclComponent={
+            template:'<div>局部注册的组件,使用components属性</div>'
+        }
+        new Vue({
+            el:"#app",
+            data:{
+                hello:'全局注册与局部注册'
+            },
+            components:{
+                'local-component':loclComponent
+            }
+        })
+    </script>
+</body>
+</html>
