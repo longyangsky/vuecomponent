@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <child-component>
+            <div slot='bg'>有背景色的slot</div> 
+            <template slot="ms" scope="props">
+                {{props.msg}}
+            </template>
+        </child-component>
+        列表作用域插槽 
+        <my-list :books="books">
+            <template slot="book" scope="props">
+                <li>{{props.bookName}}</li>
+            </template>
+        </my-list>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+       Vue.component("my-list",{
+           template:`
+           <ul>
+             <slot name="book" v-for="book in books" :book-name="book.name" ></slot>
+           </ul>
+           `,
+           props:{
+               books:{
+                   type:Array,
+                   default:function(){
+                       return [];
+                   }
+               }
+           }
+       })
+        Vue.component("child-component", {
+            template: `
+          <div>
+             <div style='background-color:red;height:20px;width:150px;' >
+                  <slot name='bg'></slot>
+             </div>
+           <slot>
+             <p>如果父组件没有插入内容默认出现 </p> 
+           </slot>
+             <slot name='ms' :msg='msg'></slot>
+          </div>
+        `,
+            data: function () {
+                return {
+                    msg: '来自子组件xxx'
+                }
+            },
+            mounted:function(){
+                //通过$slots获取solt数据
+                var ms = this.$slots.bg[0].elm.innerHTML;
+                console.log(ms)
+            }
+        })
+        new Vue({
+            el: '#app',
+            data:{
+                books:[
+                    {name:"javascript实战"},
+                    {name:"html实战"},
+                    {name:"css实战"},
+                ]
+            }
+        })
+    </script>
+</body>
+
+</html>
