@@ -18,6 +18,10 @@
         使用v-model表单双向绑定事件,默认特殊事件名为input
         <input-component v-model="count2"></input-component>
         父组件:{{count2}}
+        <hr />
+        非父子组件通信 new Vue();
+        <component-a></component-a> 
+        来自组件的数据:{{message}}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>  
@@ -37,6 +41,18 @@
                 }
             }
         })
+        
+        var bus = new Vue();
+        Vue.component("component-a",{
+            template:`
+                <div><button @click="handleEvent">传递事件</button></div>
+            `,
+            methods:{
+                handleEvent:function(){
+                    bus.$emit("on-message","来自componenta的数据")
+                }
+            }
+        }) 
         Vue.component('global-component',{
             //注意HTML不区分大小写,所以驼峰命名要改为短横模式  
             template:`
@@ -67,7 +83,8 @@
             data:{ 
                 num:123,
                 count:0,
-                count2:0
+                count2:0,
+                message:""
             } ,
             methods:{
                 emitadd:function(count){
@@ -76,8 +93,15 @@
                 emitredure:function(count){
                     this.count=count;
                 }
+            },
+            mounted:function(){
+                var _this=this;
+                bus.$on("on-message",function(message){
+                    _this.message  =  message;
+                })
             }
         })
+   
     </script>
 </body>
 </html>
