@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  <div id="app">  
+     将父组件的值传给子组件，但是子组件无法直接修改父组件值,需要定义props与子组件data属性对应
+     <br />
+     props的value字段位v-molde的默认
+     <br />
+     父组件的值{{value2}},
+        <test v-model="value2"></test>
+        <input-number   v-model="value2"  :max="10" :min="0"></input-number>
+  </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+    Vue.component("test",{
+        template:`<div>a<span>{{currentValue}}</span>c</div>`,
+        props:["value"],
+        data(){
+            return{
+                currentValue:this.value
+            } 
+        },
+        mounted(){
+            console.log(this.value);
+        }
+    })
+    Vue.component("input-number",{
+        template:` <span><input type="text" @change="handleChange" :value="currentValue"><button @click='add()' :disabled="currentValue>=max">+</button><button @click="reduce()" :disabled="currentValue<=min">-</button></span>`,
+        props:{
+            "max":{
+                type:Number,
+                default:Infinity
+
+            },
+            "min":{
+                type:Number,
+                default:-Infinity 
+            },
+            value:{
+                type:Number,
+                default:0
+            }
+        },
+        data(){
+            return {
+                currentValue:this.value
+            }
+        },
+        watch: {
+         currentValue:function(val){
+                this.$emit('input',val);
+               this.$emit('on-change',val)
+            }, 
+            /*    value:function(val){
+                this.updateValue(value)
+            }*/
+        },
+        methods:{
+            add(){ 
+                this.currentValue++;
+            },
+            reduce(){
+                this.currentValue--;
+            },
+            updateValue(val){
+                if(val>this.max){val=this.max}
+                if(val<this.min){val=this.min}
+                this.currentValue=val;
+            },
+            handleChange(event){
+                var val = event.target.value.trim();
+                val = Number(val);
+                this.currentValue=  val
+                if(val>this.max){
+                    this.currentValue=this.max
+                }
+                if(val<this.min){
+                    this.currentValue=this.min
+                }
+            }
+        },
+        mounted() {
+            console.log(this)
+            this.updateValue(this.value) 
+        },
+    })
+    new Vue({
+        el:"#app",
+        data:{
+            value2:2
+        }
+    })
+    </script>
+</body>
+</html>
